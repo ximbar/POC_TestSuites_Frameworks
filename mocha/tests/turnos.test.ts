@@ -1,7 +1,7 @@
   describe('hayDisponibilidad', () => {
     it('debería retornar true si el horario y fecha están libres', () => {
       const res = hayDisponibilidad(turnosMock, '2026-09-01', '11:00');
-      expect(res).to.be.true; // Aserción de Chai
+      expect(res).to.be.true;
     });
 
     it('debería retornar false si el horario ya está ocupado en la misma fecha', () => {
@@ -129,7 +129,6 @@
 });
 class ServicioNotificacion {
   notificar(mensaje: string): void {
-    // Imagina que hace una llamada HTTP real a un servicio de Slack, Email, etc.
     console.log(`[API REAL EXTERNA]: ${mensaje}`);
   }
 }
@@ -147,26 +146,15 @@ class GestorDeTurnos {
     return listadoActualizado;
   }
 }
-
-// === El Test Unitario con Sinon ===
 describe('GestorDeTurnos con Inyección de Dependencias (Sinon Mocks/Spies)', () => {
   it('debería llamar al servicio externo de notificación exactamente una vez con Sinon Spy', () => {
     const notificadorReal = new ServicioNotificacion();
-
-    // 1. Usamos Sinon para espiar (spy) sobre el método 'notificar' del objeto real
     const spyNotificacion = sinon.spy(notificadorReal, 'notificar');
-
     const gestor = new GestorDeTurnos(notificadorReal);
     const turnosPrueba = [{ id: '123', fecha: '2026-09-01', hora: '10:00', paciente: 'Prueba' }];
-
-    // Act
     gestor.procesarCancelacionSegura(turnosPrueba, '123');
-
-    // Assert (Chai + Sinon Assertions)
     expect(spyNotificacion.calledOnce).to.be.true;
     expect(spyNotificacion.firstCall.args[0]).to.include('Turno con ID 123 cancelado exitosamente.');
-
-    // 2. Importante: Restaurar el comportamiento original del método espiado
     spyNotificacion.restore();
 
 
